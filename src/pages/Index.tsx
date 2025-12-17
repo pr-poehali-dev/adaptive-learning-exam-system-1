@@ -4,6 +4,12 @@ import WelcomeScreen from '@/components/WelcomeScreen';
 import RegisterScreen from '@/components/RegisterScreen';
 import TestScreen from '@/components/TestScreen';
 import ResultsScreen from '@/components/ResultsScreen';
+import PlatformLayout from '@/components/PlatformLayout';
+import HomeTab from '@/components/platform/HomeTab';
+import PreparationTab from '@/components/platform/PreparationTab';
+import TestsTab from '@/components/platform/TestsTab';
+import AnalyticsTab from '@/components/platform/AnalyticsTab';
+import ProfileTab from '@/components/platform/ProfileTab';
 
 type Subject = {
   id: string;
@@ -53,10 +59,12 @@ const sampleQuestions: Question[] = [
   },
 ];
 
-type Step = 'welcome' | 'register' | 'subjects' | 'test' | 'results' | 'dashboard';
+type Step = 'welcome' | 'register' | 'subjects' | 'test' | 'results' | 'platform';
+type PlatformTab = 'home' | 'preparation' | 'tests' | 'analytics' | 'profile';
 
 export default function Index() {
   const [step, setStep] = useState<Step>('welcome');
+  const [activeTab, setActiveTab] = useState<PlatformTab>('home');
   const [userName, setUserName] = useState('');
   const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -111,7 +119,7 @@ export default function Index() {
     };
   };
 
-  const results = step === 'results' || step === 'dashboard' ? calculateResults() : null;
+  const results = step === 'results' || step === 'platform' ? calculateResults() : null;
 
   const handleRetry = () => {
     setCurrentQuestion(0);
@@ -158,16 +166,33 @@ export default function Index() {
     );
   }
 
-  if (step === 'results' || step === 'dashboard') {
+  if (step === 'results') {
     return (
       <ResultsScreen
         step={step}
         userName={userName}
         results={results}
-        onContinue={() => setStep('dashboard')}
+        onContinue={() => {
+          setStep('platform');
+          setActiveTab('home');
+        }}
         onRetry={handleRetry}
         onHome={handleHome}
       />
+    );
+  }
+
+  if (step === 'platform') {
+    return (
+      <PlatformLayout userName={userName} activeTab={activeTab} onTabChange={setActiveTab}>
+        {activeTab === 'home' && (
+          <HomeTab userName={userName} results={results} selectedSubject={selectedSubject} />
+        )}
+        {activeTab === 'preparation' && <PreparationTab />}
+        {activeTab === 'tests' && <TestsTab />}
+        {activeTab === 'analytics' && <AnalyticsTab results={results} />}
+        {activeTab === 'profile' && <ProfileTab userName={userName} selectedSubject={selectedSubject} />}
+      </PlatformLayout>
     );
   }
 

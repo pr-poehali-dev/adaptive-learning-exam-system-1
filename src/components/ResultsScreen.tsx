@@ -10,7 +10,7 @@ type Results = {
 };
 
 type ResultsScreenProps = {
-  step: 'results' | 'dashboard';
+  step: 'results';
   userName: string;
   results: Results | null;
   onContinue: () => void;
@@ -19,14 +19,12 @@ type ResultsScreenProps = {
 };
 
 export default function ResultsScreen({
-  step,
   userName,
   results,
   onContinue,
   onRetry,
-  onHome,
 }: ResultsScreenProps) {
-  if (step === 'results' && results) {
+  if (results) {
     const strengths = results.percentage >= 70 ? ['Базовые концепции', 'Простые задачи'] : [];
     const weaknesses = results.percentage < 70 ? ['Требуется практика', 'Основные темы'] : ['Сложные задачи'];
 
@@ -141,107 +139,5 @@ export default function ResultsScreen({
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 p-4 py-12">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-8 animate-fade-in">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-4xl font-bold mb-2">Привет, {userName}! 👋</h1>
-              <p className="text-lg text-muted-foreground">Ваш персональный учебный план готов</p>
-            </div>
-            <Button
-              onClick={onHome}
-              variant="outline"
-              className="rounded-xl"
-            >
-              <Icon name="Home" size={20} className="mr-2" />
-              Главная
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-slide-up">
-          <Card className="p-6 bg-gradient-to-br from-purple-500 to-pink-500 text-white border-0">
-            <div className="flex items-center gap-3 mb-3">
-              <Icon name="Target" size={28} className="text-white" />
-              <h3 className="text-lg font-bold">Пройдено тестов</h3>
-            </div>
-            <p className="text-4xl font-bold">1</p>
-            <p className="text-purple-100 mt-2">Продолжайте практиковаться!</p>
-          </Card>
-
-          <Card className="p-6 bg-gradient-to-br from-blue-500 to-cyan-500 text-white border-0">
-            <div className="flex items-center gap-3 mb-3">
-              <Icon name="TrendingUp" size={28} className="text-white" />
-              <h3 className="text-lg font-bold">Общий прогресс</h3>
-            </div>
-            <p className="text-4xl font-bold">{results?.percentage || 0}%</p>
-            <Progress value={results?.percentage || 0} className="h-2 mt-3 bg-blue-200" />
-          </Card>
-
-          <Card className="p-6 bg-gradient-to-br from-orange-500 to-red-500 text-white border-0">
-            <div className="flex items-center gap-3 mb-3">
-              <Icon name="Flame" size={28} className="text-white" />
-              <h3 className="text-lg font-bold">Активных дней</h3>
-            </div>
-            <p className="text-4xl font-bold">1</p>
-            <p className="text-orange-100 mt-2">Начните серию!</p>
-          </Card>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="p-6 animate-scale-in">
-            <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <Icon name="BookOpen" size={28} className="text-purple-600" />
-              Персональный план
-            </h3>
-            <div className="space-y-3">
-              {[
-                { title: 'Основы алгебры', progress: 60, color: 'bg-purple-500' },
-                { title: 'Геометрические задачи', progress: 30, color: 'bg-pink-500' },
-                { title: 'Тригонометрия', progress: 10, color: 'bg-blue-500' },
-              ].map((item, i) => (
-                <div key={i} className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-semibold">{item.title}</span>
-                    <span className="text-sm text-muted-foreground">{item.progress}%</span>
-                  </div>
-                  <Progress value={item.progress} className="h-2" />
-                </div>
-              ))}
-            </div>
-            <Button className="w-full mt-6 h-12 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-semibold">
-              Продолжить обучение
-              <Icon name="Play" size={20} className="ml-2" />
-            </Button>
-          </Card>
-
-          <Card className="p-6 animate-scale-in">
-            <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <Icon name="Calendar" size={28} className="text-blue-600" />
-              Активность
-            </h3>
-            <div className="h-48 flex items-center justify-center bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl mb-4">
-              <div className="text-center">
-                <Icon name="Activity" size={48} className="text-blue-400 mx-auto mb-3" />
-                <p className="text-blue-700 font-semibold">График активности</p>
-                <p className="text-sm text-blue-600 mt-1">Начните заниматься регулярно</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 bg-green-50 rounded-xl text-center border border-green-200">
-                <p className="text-sm text-green-700 font-semibold">Правильных ответов</p>
-                <p className="text-2xl font-bold text-green-600 mt-1">{results?.correct || 0}</p>
-              </div>
-              <div className="p-3 bg-purple-50 rounded-xl text-center border border-purple-200">
-                <p className="text-sm text-purple-700 font-semibold">Изучено тем</p>
-                <p className="text-2xl font-bold text-purple-600 mt-1">3</p>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </div>
-    </div>
-  );
+  return null;
 }
